@@ -38,7 +38,6 @@ public class LogEventServiceIntegrationTest {
         ids.forEach(id -> completedLogEventRepository.findById(id).ifPresent(e -> completedLogEventRepository.deleteById(e.getId())));
 
         List<CompletedLogEvent> actual = logEventService.read("logfile.txt");
-        actual.stream().forEach(e -> System.out.println(e));
 
         ids.forEach(id -> Assert.assertTrue(completedLogEventRepository.findById(id).isPresent()));
 

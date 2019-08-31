@@ -9,6 +9,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import reader.model.CompletedLogEvent;
 import reader.repository.CompletedLogEventRepository;
 import reader.service.LogEventService;
+
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.eq;
@@ -22,6 +24,8 @@ public class LogEventServiceTest {
     @Mock
     private CompletedLogEventRepository completedLogEventRepository;
 
+    private List<CompletedLogEvent> expected;
+
     @Before
     public void before(){
         logReaderService = new LogEventService(completedLogEventRepository);
@@ -29,6 +33,7 @@ public class LogEventServiceTest {
         CompletedLogEvent b = new CompletedLogEvent("scsmbstgrb", 3, null, null, false);
         CompletedLogEvent c = new CompletedLogEvent("scsmbstgrc", 8, null, null, true);
         CompletedLogEvent d = new CompletedLogEvent("scsmbstgrd", 6, null, null, true);
+        expected = Arrays.asList(a, b, c, d);
         when(completedLogEventRepository.save(eq(a))).thenReturn(a);
         when(completedLogEventRepository.save(eq(b))).thenReturn(b);
         when(completedLogEventRepository.save(eq(c))).thenReturn(c);
@@ -39,16 +44,7 @@ public class LogEventServiceTest {
     public void shouldRead() throws Exception {
 
         List<CompletedLogEvent> actual = logReaderService.read("logfile.txt");
-        actual.forEach(e -> System.out.println(e));
-        Assert.assertEquals(4, actual.size());
-        Assert.assertEquals("scsmbstgra", actual.get(0).getId());
-        Assert.assertEquals("scsmbstgrb", actual.get(1).getId());
-        Assert.assertEquals("scsmbstgrc", actual.get(2).getId());
-        Assert.assertEquals("scsmbstgrd", actual.get(3).getId());
 
-        Assert.assertTrue(actual.get(0).isAlert());
-        Assert.assertFalse(actual.get(1).isAlert());
-        Assert.assertTrue(actual.get(2).isAlert());
-        Assert.assertTrue(actual.get(3).isAlert());
+        Assert.assertEquals(expected, actual);
     }
 }
